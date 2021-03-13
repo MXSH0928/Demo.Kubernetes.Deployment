@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "demokubernetesdeployment.fullname" . }}
+  labels:
+    app: {{ template "demokubernetesdeployment.name" . }}
+    chart: {{ template "demokubernetesdeployment.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "demokubernetesdeployment.name" . }}
+    release: {{ .Release.Name }}

@@ -4,7 +4,8 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["Demo.Kubernetes.Deployment/Demo.Kubernetes.Deployment.csproj", "Demo.Kubernetes.Deployment/"]
+#COPY ["Demo.Kubernetes.Deployment/Demo.Kubernetes.Deployment.csproj", "Demo.Kubernetes.Deployment/"]
+COPY . "Demo.Kubernetes.Deployment/"
 
 RUN dotnet restore "Demo.Kubernetes.Deployment/Demo.Kubernetes.Deployment.csproj"
 COPY . .

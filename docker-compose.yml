@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  demo.kubernetes.deployment:
+    image: ${DOCKER_REGISTRY-}demokubernetesdeployment
+    container_name: "demo-kubernetes-deployment"
+    environment:
+     - ASPNETCORE_URLS=http://+:80
+     - ASPNETCORE_ENVIRONMENT=Development     
+    build:
+      context: .
+      dockerfile: Demo.Kubernetes.Deployment/Dockerfile
+    ports:
+     - "8080:80"

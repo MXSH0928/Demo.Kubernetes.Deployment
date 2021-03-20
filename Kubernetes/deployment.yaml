@@ -1,44 +1,51 @@
+#Indicate the version of the Kubernetes API.
 apiVersion: apps/v1
+#The kind defines the type of resource that the manifest is for, in this case it's for a deployment.
 kind: Deployment
+#The metadata provides details such as the name of the resource, as well as any labels attached to it.
 metadata:
-  name: webapi
+  name: demo-kubernetes-deployment
   labels:
-    app: weather-forecast
+    app: weather-forecast-webapi    
+#spec section that defines the configuration for the specified kind of resource.
 spec:
-  replicas: 1
+  replicas: 2
+  #The selector section of the deployment manifest is used by a deployment to know which pods it is managing.
   selector:
     matchLabels:
-      service: webapi
+      app: weather-forecast-webapi      
+  #template is a "manifest-inside-a-manifest", in that its contents are effectively the manifest for a pod.
   template:
     metadata:
+      #Pods get the label(s) through the template blueprint
       labels:
-        app: weather-forecast
-        service: webapi
+        app: weather-forecast-webapi
     spec:
       containers:
-        - name: webapi
+        - name: weather-forecast-webapi
           image: tuniis/demokubernetesdeployment:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 81
+            #The containerPort defined here describes the port exposed inside the container
+            - containerPort: 80
               protocol: TCP
           env:
             - name: ASPNETCORE_URLS
-              value: http://+:81
+              value: http://+:80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: webapi
+  name: weather-forecast-svc
   labels:
-    app: weather-forecast
-    service: webapi
+    app: weather-forecast-webapi
+    service: weather-forecast-svc
 spec:
   type: NodePort
   ports:
     - port: 81
-      targetPort: 81
-      nodePort: 32222
+      targetPort: 80 # Pod/Container port
+      nodePort: 32222 # http://localhost:32222/
       protocol: TCP
   selector:
-    service: webapi
+    app: weather-forecast-webapi

@@ -41,11 +41,33 @@ metadata:
     app: weather-forecast-webapi
     service: weather-forecast-svc
 spec:
-  type: NodePort #ClusterIP is the default value
+  type: ClusterIP #ClusterIP is the default value
   ports:
-    - port: 81 #The port that the service will be exposed on
-      targetPort: 80 #Pod/Container port
-      nodePort: 32222 #http://localhost:32222/
+    - port: 8181 #The port that the service will be exposed on
+      targetPort: 80 #Pod/Container port      
       protocol: TCP
   selector:
     app: weather-forecast-webapi
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: weather-forecast-ingress
+  labels: 
+    app: weather-forecast-webapi
+    service: weather-forecast-svc
+  annotations:
+    # This annotation uses a special key that is understood by the NGINX ingress controller which 
+    # tells the controller it should rewrite the "matched-path" of incoming requests to be
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:    
+    - http:
+        paths:
+        - path: /WeatherForecast   
+          pathType: Prefix       
+          backend:
+            service:
+              name: weather-forecast-svc
+              port: 
+                number: 8181

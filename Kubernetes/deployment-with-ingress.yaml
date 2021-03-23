@@ -64,7 +64,7 @@ spec:
   rules:    
     - http:
         paths:
-        - path: /WeatherForecast   
+        - path: /   
           pathType: Prefix       
           backend:
             service:
